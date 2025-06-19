@@ -68,13 +68,19 @@ function deleteRecord(ref, records) {
     }
 
     records = Array.isArray(records) ? records : [records]
+    // Copy records
+    let newRecords = records.map(x => x)
+    records = newRecords
+    
 
-    return records.filter(x => !h.isSame(x, ref))
+    let results = records.filter(x => !h.isSame(x, ref))
+    
+    return results
 
 
 }
 
-function addRecord(record, records, mergeIfExist = false) {
+function addRecord(record, records, mergeIfExist = true) {
     /**
      * Adds a record to a list of records
      * @param {Object} record - The record to add
@@ -89,6 +95,10 @@ function addRecord(record, records, mergeIfExist = false) {
 
     records = Array.isArray(records) ? records : [records]
 
+    // Copy records
+    let newRecords = records.map(x => x)
+    records = newRecords
+    
     // Check if record already exists
     let existingRecord = getRecord(record, records)
     if (existingRecord !== undefined) {
@@ -97,10 +107,8 @@ function addRecord(record, records, mergeIfExist = false) {
         records = deleteRecord(record, records)
 
         // Merge if exist
-        if (mergeIfExist) {
-            record = mergeRecords(record, existingRecord)
-        } else {
-            return records
+        if (mergeIfExist === true) {
+            record = h.merge(record, existingRecord)
         }
     }
 
@@ -130,6 +138,18 @@ function filter(records, filterParams, negativeFilterParams, strict = false) {
 
 }
 
+
+function arrayIncludes(array, value){
+    /**
+     * Checks if an array includes a value
+     * @param {Array} array - The array to check
+     * @param {Object} value - The value to check for
+     * @returns {Boolean} - True if the array includes the value, false otherwise
+     */
+    return array.some(x => h.isSame(x, value))
+}
+
+
 function sortRecords(records, reverse = false) {
     /**
      * Sorts a list of records
@@ -143,9 +163,9 @@ function sortRecords(records, reverse = false) {
     let sortedRecords = []
 
     if (reverse === true) {
-        sortedRecords = records.sorted((a, b) => gt(a, b))
+        sortedRecords = records.toSorted((a, b) => h.gt(a, b))
     } else {
-        sortedRecords = records.sorted((a, b) => lt(a, b))
+        sortedRecords = records.toSorted((a, b) => h.lt(a, b))
     }
 
     return sortedRecords
@@ -188,6 +208,9 @@ function deduplicate(records) {
     records = Array.isArray(records) ? records : [records]
     let deduplicatedRecords = []
 
+    if(records.length === 0){
+        return records
+    }
 
     // Deduplicate non-JSONLD objects
     let nonJsonRecords = records.filter(x => h.isValid(x) === false)
@@ -206,12 +229,15 @@ function deduplicate(records) {
         let duplicates = filter(jsonRecords, ref, undefined)
 
         if (duplicates > 1) {
-            let newRecord = mergeRecords(duplicates)
+            let newRecord = h.merge(duplicates)
             deduplicatedRecords.push(newRecord)
         } else {
             deduplicatedRecords.push(duplicates[0])
         }
     }
+
+    
+    return deduplicatedRecords
 }
 
 // -----------------------------------------------------
@@ -241,6 +267,8 @@ function diffLists(records1, records2) {
             diffRecords.push(record1)
         }
     }
+
+    diffRecords = diffRecords.filter(x => x !== undefined && x !== null)
     return diffRecords
 
 }
@@ -258,12 +286,19 @@ function mergeLists(records1, records2, mergeIfExist = false) {
     records2 = Array.isArray(records2) ? records2 : [records2]
 
     let mergedRecords = []
-    for (let record1 of records1) {
-        mergedRecords = addRecord(record1, mergedRecords, mergeIfExist)
-    }
+
     for (let record2 of records2) {
         mergedRecords = addRecord(record2, mergedRecords, mergeIfExist)
     }
+
+    
+    for (let record1 of records1) {
+        mergedRecords = addRecord(record1, mergedRecords, mergeIfExist)
+    }
+    
+
+  
+    
     return mergedRecords
 
 }

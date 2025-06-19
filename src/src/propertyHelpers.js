@@ -227,7 +227,7 @@ function setValue(obj, path, value, defaultValue) {
 
     // Skip if already same
     let newValues = Array.isArray(value) ? value : [value]
-    if (eq(getValues(obj, path), newValues)){
+    if (h.eq(getValues(obj, path), newValues)){
         return obj
     }
 
@@ -331,15 +331,16 @@ function addValue(obj, path, value, noDuplicates = false) {
 
     // Check if obj is a JSON-LD object
     if (h.isValid(obj) === false) {
-        return undefined
+        console.log("Invalid object", obj, path, value)
+        return false
     }
 
     // Deal with lists
     if (Array.isArray(value)) {
         for (let v of value) {
-            obj = addValue(obj, path, v, noDuplicates)
+            addValue(obj, path, v, noDuplicates)
         }
-        return obj
+        return true
     }
 
     // 
@@ -351,10 +352,11 @@ function addValue(obj, path, value, noDuplicates = false) {
     }
 
     values.push(value)
+    
 
     setValue(obj, path, values)
-
-    return obj
+    
+    return true
 
 }
 

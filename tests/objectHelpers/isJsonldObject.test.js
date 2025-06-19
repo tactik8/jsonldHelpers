@@ -1,5 +1,5 @@
 
-import { objectHelpers } from '../src/src/objectHelpers.js';
+import { objectHelpers } from '../../src/src/objectHelpers.js';
 
 describe('isJsonldObject', () => {
     test('should return true for valid JSON-LD object', () => {

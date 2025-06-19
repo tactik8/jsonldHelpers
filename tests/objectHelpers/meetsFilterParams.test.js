@@ -1,5 +1,5 @@
 
-import { objectHelpers } from '../src/src/objectHelpers.js';
+import { objectHelpers } from '../../src/src/objectHelpers.js';
 
 describe('meetsFilterParams', () => {
     const validRecord = { '@type': 'Person', '@id': '123', name: 'John', age: 30 };

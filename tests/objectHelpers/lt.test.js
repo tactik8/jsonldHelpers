@@ -1,5 +1,5 @@
 
-import { objectHelpers } from '../src/src/objectHelpers.js';
+import { objectHelpers } from '../../src/src/objectHelpers.js';
 
 describe('lt', () => {
     test('should compare JSON-LD objects by type first', () => {

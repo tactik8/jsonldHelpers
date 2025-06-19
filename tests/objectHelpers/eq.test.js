@@ -1,5 +1,5 @@
 
-import { objectHelpers } from '../src/src/objectHelpers.js';
+import { objectHelpers } from '../../src/src/objectHelpers.js';
 
 describe('eq', () => {
     test('should return true for identical JSON-LD objects', () => {

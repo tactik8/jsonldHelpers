@@ -1,5 +1,5 @@
 
-import { objectHelpers } from '../src/src/objectHelpers.js';
+import { objectHelpers } from '../../src/src/objectHelpers.js';
 
 describe('generateUUIDv4', () => {
     test('should generate a valid UUID v4', () => {

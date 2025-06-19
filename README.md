@@ -20,6 +20,11 @@ npm publish
 
 ```
 
+please write unit tests for all functions in arrayHelpers.js. Please separate the tests one file by function. Please consider edge cases.
+
+
+
+
 
 ## How to use
 

@@ -310,7 +310,9 @@ function eq(obj1, obj2) {
     }
     
     if (isJsonldObject(obj1) === false || isJsonldObject(obj2) === false) {
-        return JSON.stringify(obj1, Object.keys(obj1).sort()) == JSON.stringify(obj2, Object.keys(obj2).sort())
+        obj1 = typeof obj1 === 'object' ? JSON.stringify(obj1, Object.keys(obj1).sort()) : obj1
+        obj2 = typeof obj2 === 'object' ? JSON.stringify(obj2, Object.keys(obj2).sort()) : obj2
+        return obj1 === obj2
     }
 
     let diff1 = diff(obj1, obj2)
@@ -548,18 +550,21 @@ function mergeRecords(record1, record2) {
     }
 
 
-    let mergedRecord = {}
+    let mergedRecord = getRef(record1)
 
     for (let k of Object.keys(record1)) {
+        let values1 = ph.values.get(record1, k, [])
+        ph.value.add(mergedRecord, k, values1, true)
+    }
 
-        let values1 = getValues(record1, k, [])
-        vh.add(mergedRecord, k, values1, true)
+    for (let k of Object.keys(record2)) {
 
-        let values2 = getValues(record2, k, [])
-        vh.add(mergedRecord, k, values2, true)
+        let values2 = ph.values.get(record2, k, [])
+        ph.value.add(mergedRecord, k, values2, true)
 
     }
 
+    
     return mergedRecord
 
 }
