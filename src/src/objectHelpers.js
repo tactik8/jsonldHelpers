@@ -155,7 +155,7 @@ function isJsonldObject(obj) {
     let record_type = obj?.['@type']
     let record_id = obj?.['@id']
     if (!record_type || record_type === null) { return false }
-    if (!record_id || record_id === null) { return false }
+    //if (!record_id || record_id === null) { return false }
     return true
 }
 

@@ -46,7 +46,7 @@ function getRecord(ref, records) {
     records = Array.isArray(records) ? records : [records]
 
     for (let record of records) {
-        if (isSame(record, ref)) {
+        if (h.isSame(record, ref)) {
             return record
         }
     }
@@ -69,7 +69,7 @@ function deleteRecord(ref, records) {
 
     records = Array.isArray(records) ? records : [records]
 
-    return records.filter(x => !isSame(x, ref))
+    return records.filter(x => !h.isSame(x, ref))
 
 
 }

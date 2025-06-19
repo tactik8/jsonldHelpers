@@ -16,11 +16,11 @@ describe('isJsonldObject', () => {
         expect(result).toBe(false);
     });
 
-    test('should return false for object without @id', () => {
+    test('should return true for object without @id', () => {
         const obj = { '@type': 'Person', name: 'John' };
         const result = objectHelpers.isValid(obj);
         
-        expect(result).toBe(false);
+        expect(result).toBe(true);
     });
 
     test('should return false for object with null @type', () => {
@@ -30,11 +30,11 @@ describe('isJsonldObject', () => {
         expect(result).toBe(false);
     });
 
-    test('should return false for object with null @id', () => {
+    test('should return true for object with null @id', () => {
         const obj = { '@type': 'Person', '@id': null, name: 'John' };
         const result = objectHelpers.isValid(obj);
         
-        expect(result).toBe(false);
+        expect(result).toBe(true);
     });
 
     test('should return false for null input', () => {
@@ -60,10 +60,10 @@ describe('isJsonldObject', () => {
         expect(result).toBe(false);
     });
 
-    test('should return true for object with empty string @type and @id', () => {
+    test('should return false for object with empty string @type and @id', () => {
         const obj = { '@type': '', '@id': '', name: 'John' };
         const result = objectHelpers.isValid(obj);
         
-        expect(result).toBe(true);
+        expect(result).toBe(false);
     });
 });
