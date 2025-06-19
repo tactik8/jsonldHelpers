@@ -554,13 +554,13 @@ function mergeRecords(record1, record2) {
 
     for (let k of Object.keys(record1)) {
         let values1 = ph.values.get(record1, k, [])
-        ph.value.add(mergedRecord, k, values1, true)
+        mergedRecord= ph.value.add(mergedRecord, k, values1, true)
     }
 
     for (let k of Object.keys(record2)) {
 
         let values2 = ph.values.get(record2, k, [])
-        ph.value.add(mergedRecord, k, values2, true)
+        mergedRecord= ph.value.add(mergedRecord, k, values2, true)
 
     }
 

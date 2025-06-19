@@ -140,6 +140,12 @@ function getValues(obj, path, defaultValue) {
      */
 
 
+
+    // If empty path
+    if (path === undefined || path === null || path === ''){
+        return obj
+    }
+    
     // If the object is null or undefined, or the path is not a string, return undefined immediately.
     if (obj === null || typeof obj === 'undefined' || typeof path !== 'string') {
         if (defaultValue !== undefined) {
@@ -199,6 +205,7 @@ function getValues(obj, path, defaultValue) {
         }
     }
 
+    current = Array.isArray(current) ? current : [current]
     return current; // Return the final value found at the specified path
 
 }
@@ -231,6 +238,8 @@ function setValue(obj, path, value, defaultValue) {
         return obj
     }
 
+    // Clone obj
+    obj = structuredClone(obj);
 
 
     // Split the path into individual keys, handling both dot notation and array bracket notation.
@@ -320,7 +329,7 @@ function setValue(obj, path, value, defaultValue) {
             }
         }
     }
-    return true;
+    return obj;
 
 }
 
@@ -343,6 +352,10 @@ function addValue(obj, path, value, noDuplicates = false) {
         return true
     }
 
+
+    // Clone obj
+    obj = structuredClone(obj);
+    
     // 
     let values = getValues(obj, path, [])
     values = Array.isArray(values) ? values : [values]
@@ -354,9 +367,9 @@ function addValue(obj, path, value, noDuplicates = false) {
     values.push(value)
     
 
-    setValue(obj, path, values)
+    let result = setValue(obj, path, values)
     
-    return true
+    return result
 
 }
 
@@ -372,9 +385,14 @@ function deleteValue(obj, path, value) {
     if (h.isValid(obj) === false) {
         return undefined
     }
+
+    // Clone obj
+    obj = structuredClone(obj);
+
+    
     let values = getValues(obj, path, [])
     values = Array.isArray(values) ? values : [values]
-    values = values.filter(x => isSame(x, value) === false)
+    values = values.filter(x => h.isSame(x, value) === false)
     setValue(obj, path, values)
     return obj
 }
