@@ -1,4 +1,9 @@
 
+import { propertyHelpers as ph} from './propertyHelpers.js'
+import { arrayHelpers as ah} from './arrayHelpers.js'
+import { valueHelpers as vh } from './valueHelpers.js'
+
+
 
 export const objectHelpers = {
     uuid: {
@@ -35,8 +40,16 @@ function generateUUIDv4() {
     // Use crypto.getRandomValues for better randomness if available,
     // otherwise fallback to Math.random (less secure but still functional).
     // This approach ensures compatibility with various environments.
+
     const randomBytes = new Uint8Array(16);
-    if (window.crypto && window.crypto.getRandomValues) {
+
+    let c1 = false
+    try {
+        c1 = window.crypto && window.crypto.getRandomValues
+    } catch (error){
+    }
+    
+    if (c1 === true) {
         window.crypto.getRandomValues(randomBytes);
     } else {
         // Fallback for environments without window.crypto (e.g., older browsers)
@@ -94,7 +107,7 @@ function thing(record_type = "Thing", record_id) {
 }
 
 
-function setID(obj) {
+function setID(obj, defaultValue) {
     /**
      * Sets the ID of an object if it does not have one
      * @param {Object} obj - The object to set the ID of
@@ -102,20 +115,24 @@ function setID(obj) {
      * @example setID({name: "John Doe"}) // {name: "John Doe", "@id": "1234567890"}
      */
 
-    if (typeof obj !== 'object' && obj !== null && Array.isArray(obj)) {
+    
+    if (Array.isArray(obj)) {
+        return obj.map(x => setID(x, defaultValue))
+    }
 
-        return obj.map(x => flattenObject(x))
-
+    if(isJsonldObject(obj) === false){
+        if(defaultValue){
+            return defaultValue
+        } else {
+            throw("Invalid object")
+        }
     }
 
     let record_type = obj?.['@type']
     let record_id = obj?.['@id']
 
-    if (!record_type || record_type === null) { return undefined }
     if (!record_id || record_id === null) {
-
         obj['@id'] = generateUUIDv4()
-
     }
 
     return obj
@@ -130,6 +147,11 @@ function isJsonldObject(obj) {
      * @example isJsonldObject({@id: "John Doe", name: "John Doe"}) // true
      * @example isJsonldObject({name: "John Doe"}) // false
      */
+
+    if(typeof obj !== 'object' || Array.isArray(obj)){
+        return false
+    }
+    
     let record_type = obj?.['@type']
     let record_id = obj?.['@id']
     if (!record_type || record_type === null) { return false }
@@ -222,32 +244,36 @@ function meetsFilterParams(record, filterParams, negativeFilterParams, strict = 
     }
 
     // Handle filterParams
-    for (let k of Object.keys(filterParams)) {
-
-        if (strict === false) {
-            if (valueContains(record?.[k], filterParams?.[k]) === false) {
-                return false
-            }
-
-        } else {
-            if (isSame(record?.[k], filterParams?.[k]) === false) {
-                return false
+    if(filterParams){
+        for (let k of Object.keys(filterParams)) {
+    
+            if (strict === false) {
+                if (valueContains(record?.[k], filterParams?.[k]) === false) {
+                    return false
+                }
+    
+            } else {
+                if (isSame(record?.[k], filterParams?.[k]) === false) {
+                    return false
+                }
             }
         }
     }
 
 
     // Handle negativeFilterParams
-    for (let k of Object.keys(negativeFilterParams)) {
-
-        if (strict === false) {
-            if (valueContains(record?.[k], negativeFilterParams?.[k]) === true) {
-                return false
-            }
-
-        } else {
-            if (isSame(record?.[k], negativeFilterParams?.[k]) === true) {
-                return false
+    if(negativeFilterParams){
+        for (let k of Object.keys(negativeFilterParams)) {
+    
+            if (strict === false) {
+                if (valueContains(record?.[k], negativeFilterParams?.[k]) === true) {
+                    return false
+                }
+    
+            } else {
+                if (isSame(record?.[k], negativeFilterParams?.[k]) === true) {
+                    return false
+                }
             }
         }
     }
@@ -278,6 +304,11 @@ function eq(obj1, obj2) {
      * @example eq({name: "John Doe"}, {name: "Jane Doe"}) // false
      */
 
+
+    if((!obj1 || obj1 === null) && (!obj2 || obj2 === null)){
+        return obj1 === obj2
+    }
+    
     if (isJsonldObject(obj1) === false || isJsonldObject(obj2) === false) {
         return JSON.stringify(obj1, Object.keys(obj1).sort()) == JSON.stringify(obj2, Object.keys(obj2).sort())
     }
@@ -301,14 +332,29 @@ function lt(obj1, obj2) {
      * 
      */
 
+
+    // Deal with undefined
+    let c1 = obj1 === undefined || obj1 === null
+    let c2 = obj2 === undefined || obj2 === null
+    if (c1 && !c2){
+        return true
+    }
+    if (!c1 && c2){
+        return false
+    }
+    if (c1 && c2){
+        return false
+    }
+
+    
     // Deal with non object
     if (isJsonldObject(obj1) === false || isJsonldObject(obj2) === false) {
 
-        if (typeof obj1.getMonth !== 'function' && typeof obj1 === "number") {
+        if (typeof obj1.getMonth !== 'function' && typeof obj1 !== "number") {
             obj1 = JSON.stringify(obj1, Object.keys(obj1).sort())
         }
 
-        if (typeof obj2.getMonth !== 'function' && typeof obj2 === "number") {
+        if (typeof obj2.getMonth !== 'function' && typeof obj2 !== "number") {
             obj2 = JSON.stringify(obj2, Object.keys(obj2).sort())
         }
 
@@ -336,13 +382,28 @@ function gt(obj1, obj2) {
      * @example gt({name: "John Doe"}, {name: "John Doe"}) // false
      */
 
+
+    // Deal with undefined
+    let c1 = obj1 === undefined || obj1 === null
+    let c2 = obj2 === undefined || obj2 === null
+    if (!c1 && c2){
+        return true
+    }
+    if (c1 && !c2){
+        return false
+    }
+    if (c1 && c2){
+        return false
+    }
+
+    
     // Deal with non object
     if (isJsonldObject(obj1) === false || isJsonldObject(obj2) === false) {
-        if (typeof obj1.getMonth !== 'function' && typeof obj1 === "number") {
+        if (typeof obj1.getMonth !== 'function' && typeof obj1 !== "number") {
             obj1 = JSON.stringify(obj1, Object.keys(obj1).sort())
         }
 
-        if (typeof obj2.getMonth !== 'function' && typeof obj2 === "number") {
+        if (typeof obj2.getMonth !== 'function' && typeof obj2 !== "number") {
             obj2 = JSON.stringify(obj2, Object.keys(obj2).sort())
         }
 
@@ -374,6 +435,16 @@ function isSame(obj1, obj2) {
      */
 
 
+
+    // Deal with undefined
+    if (obj1 === undefined || obj2 === undefined){
+        return obj1 === obj2
+    }
+    // Deal with null
+    if (obj1 === null || obj2 === null){
+        return obj1 === obj2
+    }
+    
     // Deal with array
     if (Array.isArray(obj1) || Array.isArray(obj2)) {
 
@@ -426,6 +497,14 @@ function diff(obj1, obj2) {
      * 
      */
 
+
+    // Deal with undefined
+    if (obj1 === undefined || obj1 === null || obj2 === undefined || obj2 === null){
+        return obj1
+    }
+
+
+    // Deal with non object
     if (isJsonldObject(obj1) === false || isJsonldObject(obj2) === false) {
         return undefined
     }
@@ -433,9 +512,12 @@ function diff(obj1, obj2) {
     let diff = {}
     for (let k of Object.keys(obj1)) {
 
-        let values = obj1?.[k]
+        
+        
+        let values = obj1?.[k] 
         values = Array.isArray(values) ? values : [values]
         for (let v of values) {
+            
             if (valueContains(obj2?.[k], v) === false) {
                 diff[k] = diff[k] || []
                 diff[k].push(v)
@@ -471,10 +553,10 @@ function mergeRecords(record1, record2) {
     for (let k of Object.keys(record1)) {
 
         let values1 = getValues(record1, k, [])
-        addValue(mergedRecord, k, values1, true)
+        vh.add(mergedRecord, k, values1, true)
 
         let values2 = getValues(record2, k, [])
-        addValue(mergedRecord, k, values2, true)
+        vh.add(mergedRecord, k, values2, true)
 
     }
 
@@ -648,7 +730,7 @@ function flattenObject(obj) {
     let records = [obj]
     let nestedRecords = getNestedRecords(obj)
     nestedRecords = nestedRecords.filter(x => x !== undefined && x != [])
-    nestedRecords.map(x => addRecord(x, records, true))
+    nestedRecords.map(x => ah.add(x, records, true))
     records = records.map(x => changeNestedRecordsToRef(x))
     return records
 

@@ -72,8 +72,7 @@ describe('diff', () => {
         const result = objectHelpers.diff(obj1, obj2);
         
         expect(result).toEqual({
-            name: [null],
-            age: [undefined]
+            name: [null]
         });
     });
 
