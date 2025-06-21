@@ -6,6 +6,14 @@ JS library forjsonld
 
 ## Test and publish
 
+### From github
+```
+pip install git+https://github.com/tactik8/jsonldHelpers
+
+```
+
+
+
 ```
 npm install --save-dev jest
 
