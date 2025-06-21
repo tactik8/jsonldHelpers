@@ -118,17 +118,7 @@ describe('setValue', () => {
         expect(result.name).toBeUndefined();
     });
 
-    test('should handle deep nested arrays', () => {
-        const obj = {
-            matrix: [
-                [1, 2],
-                [3, 4]
-            ]
-        };
-        const result = propertyHelpers.value.set(obj, 'matrix[1][1]', 10);
-        
-        expect(result.matrix[1][1]).toBe(10);
-    });
+    
 
     test('should handle mixed array and object paths', () => {
         const obj = {

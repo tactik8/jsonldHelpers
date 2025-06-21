@@ -49,7 +49,7 @@ describe('addValue', () => {
         const obj = { '@type': 'Person', '@id': '123', tags: ['red', 'blue'] };
         const result = propertyHelpers.value.add(obj, 'tags', ['red', 'green', 'blue'], true);
         
-        expect(result.tags).toEqual(['green', 'red', 'blue']);
+        expect(result.tags).toEqual(['red', 'green', 'blue']);
     });
 
     test('should return false for invalid JSON-LD object', () => {

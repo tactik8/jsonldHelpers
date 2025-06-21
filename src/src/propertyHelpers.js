@@ -228,7 +228,7 @@ function setValue(obj, path, value, defaultValue) {
         if (defaultValue !== undefined) {
             return defaultValue
         }
-        return false;
+        return undefined;
     }
 
 
@@ -333,13 +333,13 @@ function setValue(obj, path, value, defaultValue) {
 
 }
 
-function addValue(obj, path, value, noDuplicates = false) {
+function addValue(obj, path, value, noDuplicates = true) {
     /**
      * Adds a value to a property of an object
      */
 
     // Check if obj is a JSON-LD object
-    if (h.isValid(obj) === false) {
+    if (typeof obj !== 'object') {
         console.log("Invalid object", obj, path, value)
         return false
     }
@@ -347,9 +347,9 @@ function addValue(obj, path, value, noDuplicates = false) {
     // Deal with lists
     if (Array.isArray(value)) {
         for (let v of value) {
-            addValue(obj, path, v, noDuplicates)
+            obj = addValue(obj, path, v, noDuplicates)
         }
-        return true
+        return obj
     }
 
 
@@ -360,7 +360,7 @@ function addValue(obj, path, value, noDuplicates = false) {
     let values = getValues(obj, path, [])
     values = Array.isArray(values) ? values : [values]
 
-    if (noDuplicates) {
+    if (noDuplicates === true) {
         values = values.filter(x => x !== value)
     }
 
@@ -393,6 +393,7 @@ function deleteValue(obj, path, value) {
     let values = getValues(obj, path, [])
     values = Array.isArray(values) ? values : [values]
     values = values.filter(x => h.isSame(x, value) === false)
-    setValue(obj, path, values)
+    obj = setValue(obj, path, values)
+    
     return obj
 }

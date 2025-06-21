@@ -9,7 +9,7 @@ import { itemListHelpers} from './src/itemListHelpers.js'
 
 let h = { ...objectHelpers, ...propertyHelpers}
 h.array = arrayHelpers
-h.value = valueHelpers
+//h.value = valueHelpers
 h.itemList = itemListHelpers
 
     
