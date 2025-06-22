@@ -1,6 +1,6 @@
 
-import { propertyHelpers as ph} from './propertyHelpers.js'
-import { arrayHelpers as ah} from './arrayHelpers.js'
+import { propertyHelpers as ph } from './propertyHelpers.js'
+import { arrayHelpers as ah } from './arrayHelpers.js'
 import { valueHelpers as vh } from './valueHelpers.js'
 
 
@@ -29,7 +29,7 @@ export const objectHelpers = {
         get: getNestedRecords,
         toRefs: changeNestedRecordsToRef
     }
-    
+
 }
 
 // -----------------------------------------------------
@@ -46,9 +46,9 @@ function generateUUIDv4() {
     let c1 = false
     try {
         c1 = window.crypto && window.crypto.getRandomValues
-    } catch (error){
+    } catch (error) {
     }
-    
+
     if (c1 === true) {
         window.crypto.getRandomValues(randomBytes);
     } else {
@@ -115,16 +115,16 @@ function setID(obj, defaultValue) {
      * @example setID({name: "John Doe"}) // {name: "John Doe", "@id": "1234567890"}
      */
 
-    
+
     if (Array.isArray(obj)) {
         return obj.map(x => setID(x, defaultValue))
     }
 
-    if(isJsonldObject(obj) === false){
-        if(defaultValue){
+    if (isJsonldObject(obj) === false) {
+        if (defaultValue) {
             return defaultValue
         } else {
-            throw("Invalid object")
+            throw ("Invalid object")
         }
     }
 
@@ -148,10 +148,10 @@ function isJsonldObject(obj) {
      * @example isJsonldObject({name: "John Doe"}) // false
      */
 
-    if(typeof obj !== 'object' || Array.isArray(obj)){
+    if (typeof obj !== 'object' || Array.isArray(obj)) {
         return false
     }
-    
+
     let record_type = obj?.['@type']
     let record_id = obj?.['@id']
     if (!record_type || record_type === null) { return false }
@@ -210,7 +210,7 @@ function getRef(obj) {
 
 }
 
-function setRef(obj, ref){
+function setRef(obj, ref) {
     /**
      * Sets the reference object of an object
      * @param {Object} obj - The object to set the reference object of
@@ -222,6 +222,179 @@ function setRef(obj, ref){
     obj['@id'] = ref?.['@id']
 
     return obj
+}
+
+
+
+function valueMeetsFilterParams(value, param, strict = false) {
+    /**
+     *  Tests if a value meets the filter parameters
+     * @param {*} value - The value to test
+     * @param {*} param - The filter parameters
+     * @param {Boolean} strict - If true, the value must match the filter parameters exactly, else checks that filter parameters are a subset of the value
+     * @returns {Boolean} - True if the value meets the filter parameters, false otherwise
+     * @example valueMeetsFilterParams(30, 30) // true
+     * @example valueMeetsFilterParams(30, { lt: 35}) // true
+     * 
+     */
+
+
+
+    let conditions = []
+
+
+    // Deal with array of values
+    if (Array.isArray(value)) {
+        let results = value.map(x => valueMeetsFilterParams(x, param, strict))
+
+        console.log('rr', results)
+        if (strict === true) {
+            return results.every(x => x === true)
+        } else {
+            return results.some(x => x === true)
+        }
+    }
+
+    // Deal with array of params
+    if (Array.isArray(param)) {
+        let results = param.map(x => valueMeetsFilterParams(value, x, strict))
+        if (strict === true) {
+            return results.every(x => x === true)
+        } else {
+            return results.some(x => x === true)
+        }
+    }
+
+
+    // Eval no filter params adjustments 
+    if (typeof param !== 'object') {
+        param = { "$eq": param }
+    }
+
+
+    // Eval and
+    if (param?.['$and']) {
+        let results = param['$and'].map(x => valueMeetsFilterParams(value, x, strict))
+        conditions.push(results.every(x => x === true))
+    }
+
+    // Eval or
+    if (param?.['$or']) {
+        let results = param['$or'].map(x => valueMeetsFilterParams(value, x, strict))
+        conditions.push(results.some(x => x === true))
+    }
+
+    // Eval not
+    if (param?.['$not']) {
+        let result = !valueMeetsFilterParams(value, param?.['$not'], strict)
+        conditions.push(result)
+    }
+
+
+    // Eval eq
+    if (param?.['$eq']) {
+        let result = isSame(value, param['$eq'])
+        conditions.push(result)
+    }
+
+    // Eval ne
+    if (param?.['$ne']) {
+        let result = (false && isSame(value, param['$ne']))
+        conditions.push(result)
+    }
+
+    // Eval lt
+    if (param?.['$lt']) {
+        let result = lt(value, param['$lt'])
+        conditions.push(result)
+    }
+
+    // Eval le
+    if (param?.['$le']) {
+        let result = le(value, param['$le'])
+        conditions.push(result)
+    }
+
+    // Eval gt
+    if (param?.['$gt']) {
+        let result = gt(value, param['$gt'])
+        conditions.push(result)
+    }
+
+    // Eval ge
+    if (param?.['$ge']) {
+        let result = ge(value, param['$ge'])
+        conditions.push(result)
+    }
+
+    // Eval contains
+    if (param?.['$contains']) {
+        let result = valueContains(value, param['$contains'])
+        conditions.push(result)
+    }
+
+    // Eval inclludes
+    if (param?.['$includes']) {
+        let result = typeof value === 'string' && value.includes(param['$includes'])
+        conditions.push(result)
+    }
+
+    // Eval startsWith
+    if (param?.['$startsWith']) {
+        let result = value.startsWith(param['$startsWith'])
+        conditions.push(result)
+    }
+
+    // Eval endsWith
+    if (param?.['$endsWith']) {
+        let result = value.endsWith(param['$endsWith'])
+        conditions.push(result)
+    }
+
+    // Eval any key 
+    if (param?.['$*']){
+
+
+        let results = []
+
+        if (typeof value === "object"){
+            results.push(valueMeetsFilterParams(value, param['$*'], strict))
+            let keys = Object.keys(value)
+            let subResults = keys.map(x => valueMeetsFilterParams(value[x], param, strict))
+            results.push(subResults.some(x => x === true))
+        } else {
+            results.push(valueMeetsFilterParams(value, param['$*'], strict))
+        }
+
+
+        conditions.push(results.some(x => x === true))
+
+    }
+
+    // Eval regex
+    if (param?.['$regex']) {
+
+
+        const dynamicPattern = param?.['$regex']
+        const dynamicFlags = "gi"  // Global and case-insensitive
+        const regexExp = new RegExp(dynamicPattern, dynamicFlags);
+
+        const regex = new RegExp(regexExp)
+        let result = typeof value === 'string' && regex.test(value)
+        conditions.push(result)
+
+    }
+
+
+    // Eval normal keys
+    let keys = Object.keys(param).filter(x => !x.startsWith('$'))
+    for (let k of keys) {
+        let result = valueMeetsFilterParams(value?.[k], param[k], strict)
+        conditions.push(result)
+    }
+
+    return conditions.every(x => x === true)
+
 }
 
 
@@ -244,34 +417,45 @@ function meetsFilterParams(record, filterParams, negativeFilterParams, strict = 
     }
 
     // Handle filterParams
-    if(filterParams){
+    if (filterParams) {
+
+
+        if (valueMeetsFilterParams(record, filterParams, strict) === false) {
+            return false
+        }
+
+    }
+
+    // Handle filterParams
+    if (negativeFilterParams) {
+
+
+        if (valueMeetsFilterParams(record, filterParams, strict) === true) {
+            return false
+        }
+
+    }
+
+    return true
+
+
+    // Handle filterParams
+    if (filterParams) {
         for (let k of Object.keys(filterParams)) {
-    
-            if (strict === false) {
-                if (valueContains(record?.[k], filterParams?.[k]) === false) {
-                    return false
-                }
-    
-            } else {
-                if (isSame(record?.[k], filterParams?.[k]) === false) {
-                    return false
-                }
+
+            if (valueMeetsFilterParams(record?.[k], filterParams[k], strict) === false) {
+                return false
             }
         }
     }
 
-
     // Handle negativeFilterParams
-    if(negativeFilterParams){
+    if (negativeFilterParams) {
         for (let k of Object.keys(negativeFilterParams)) {
-    
-            if (strict === false) {
-                if (valueContains(record?.[k], negativeFilterParams?.[k]) === true) {
-                    return false
-                }
-    
-            } else {
-                if (isSame(record?.[k], negativeFilterParams?.[k]) === true) {
+
+            for (let k of Object.keys(filterParams)) {
+
+                if (valueMeetsFilterParams(record?.[k], filterParams[k], strict) === true) {
                     return false
                 }
             }
@@ -305,10 +489,10 @@ function eq(obj1, obj2) {
      */
 
 
-    if((!obj1 || obj1 === null) && (!obj2 || obj2 === null)){
+    if ((!obj1 || obj1 === null) && (!obj2 || obj2 === null)) {
         return obj1 === obj2
     }
-    
+
     if (isJsonldObject(obj1) === false || isJsonldObject(obj2) === false) {
         obj1 = typeof obj1 === 'object' ? JSON.stringify(obj1, Object.keys(obj1).sort()) : obj1
         obj2 = typeof obj2 === 'object' ? JSON.stringify(obj2, Object.keys(obj2).sort()) : obj2
@@ -338,17 +522,17 @@ function lt(obj1, obj2) {
     // Deal with undefined
     let c1 = obj1 === undefined || obj1 === null
     let c2 = obj2 === undefined || obj2 === null
-    if (c1 && !c2){
+    if (c1 && !c2) {
         return true
     }
-    if (!c1 && c2){
+    if (!c1 && c2) {
         return false
     }
-    if (c1 && c2){
+    if (c1 && c2) {
         return false
     }
 
-    
+
     // Deal with non object
     if (isJsonldObject(obj1) === false || isJsonldObject(obj2) === false) {
 
@@ -388,17 +572,17 @@ function gt(obj1, obj2) {
     // Deal with undefined
     let c1 = obj1 === undefined || obj1 === null
     let c2 = obj2 === undefined || obj2 === null
-    if (!c1 && c2){
+    if (!c1 && c2) {
         return true
     }
-    if (c1 && !c2){
+    if (c1 && !c2) {
         return false
     }
-    if (c1 && c2){
+    if (c1 && c2) {
         return false
     }
 
-    
+
     // Deal with non object
     if (isJsonldObject(obj1) === false || isJsonldObject(obj2) === false) {
         if (typeof obj1.getMonth !== 'function' && typeof obj1 !== "number") {
@@ -439,14 +623,14 @@ function isSame(obj1, obj2) {
 
 
     // Deal with undefined
-    if (obj1 === undefined || obj2 === undefined){
+    if (obj1 === undefined || obj2 === undefined) {
         return obj1 === obj2
     }
     // Deal with null
-    if (obj1 === null || obj2 === null){
+    if (obj1 === null || obj2 === null) {
         return obj1 === obj2
     }
-    
+
     // Deal with array
     if (Array.isArray(obj1) || Array.isArray(obj2)) {
 
@@ -501,7 +685,7 @@ function diff(obj1, obj2) {
 
 
     // Deal with undefined
-    if (obj1 === undefined || obj1 === null || obj2 === undefined || obj2 === null){
+    if (obj1 === undefined || obj1 === null || obj2 === undefined || obj2 === null) {
         return obj1
     }
 
@@ -514,12 +698,12 @@ function diff(obj1, obj2) {
     let diff = {}
     for (let k of Object.keys(obj1)) {
 
-        
-        
-        let values = obj1?.[k] 
+
+
+        let values = obj1?.[k]
         values = Array.isArray(values) ? values : [values]
         for (let v of values) {
-            
+
             if (valueContains(obj2?.[k], v) === false) {
                 diff[k] = diff[k] || []
                 diff[k].push(v)
@@ -554,17 +738,17 @@ function mergeRecords(record1, record2) {
 
     for (let k of Object.keys(record1)) {
         let values1 = ph.values.get(record1, k, [])
-        mergedRecord= ph.value.add(mergedRecord, k, values1, true)
+        mergedRecord = ph.value.add(mergedRecord, k, values1, true)
     }
 
     for (let k of Object.keys(record2)) {
 
         let values2 = ph.values.get(record2, k, [])
-        mergedRecord= ph.value.add(mergedRecord, k, values2, true)
+        mergedRecord = ph.value.add(mergedRecord, k, values2, true)
 
     }
 
-    
+
     return mergedRecord
 
 }
