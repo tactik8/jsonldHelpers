@@ -37,7 +37,15 @@ git clone https://github.com/tactik8/jsonldHelpers ./helpers
 ```
 import { jsonldHelpers as h } from 'https://tactik8.github.io/krakenJsSchema/kraken_schema/kraken_schema.js'
 
-let k = KrakenSchemas.get(record_type)
+let record = {
+	"@context": "https://schema.org/",
+	"@type": "Thing",
+	"@id": "thing1",
+	"name": "thing1"
+}
+
+
+let k = h.value.get(record, '@type')
 
 
 ```
@@ -66,10 +74,4 @@ please write unit tests for all functions in arrayHelpers.js. Please separate th
 
 ## Running tests
 node --experimental-vm-modules node_modules/.bin/jest
-
-## Attributes
-
-- k.properties: list of properties objects
-- l.propertiesLight: mvp list of properties object
-
 
