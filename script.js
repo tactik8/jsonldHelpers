@@ -19,6 +19,7 @@ let record = {
 
     }
 
+
 let result = h.flatten(record)
 
 
