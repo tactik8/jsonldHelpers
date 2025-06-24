@@ -1,19 +1,28 @@
 
 
-import { jsonLdHelpers as h } from './src/jsonldHelpers.js'
-
-
-let t = h.new()
-
-console.log(t)
-const obj = { '@type': 'Person', '@id': '123', tags: ['red', 'blue'] };
-
-console.log(h.value)
-
-const result = h.value.add(obj, 'tags', ['red', 'green', 'blue'], true);
+import { jsonLdHelpers as h } from './jsonldHelpers/src/jsonldHelpers.js'
 
 
 
-//expect(result.tags).toEqual(['green', 'red', 'blue']);
+let record = {
+        "@context": "https://schema.org/",
+        "@type": "Thing",
+        "@id": "thing1",
+        "name": "thing1",
+    "other": {
+            "@context": "https://schema.org/",
+            "@type": "Thing",
+            "@id": "thing2",
+            "name": "thing2"
+        }
+
+
+    }
+
+let result = h.flatten(record)
+
+
+
+
 
 console.log(JSON.stringify(result, null,4))
