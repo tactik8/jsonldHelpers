@@ -4,15 +4,14 @@ JS library forjsonld
 
 
 
-## Test and publish
+## Install
 
 ### From github
 ```
-pip install git+https://github.com/tactik8/jsonldHelpers
-
+git clone https://github.com/tactik8/jsonldHelpers ./helpers
 ```
 
-
+## Test and publish
 
 ```
 npm install --save-dev jest
@@ -28,8 +27,7 @@ npm publish
 
 ```
 
-please write unit tests for all functions in arrayHelpers.js. Please separate the tests one file by function. Please consider edge cases.
-
+git clone https://github.com/tactik8/jsonldHelpers ./helpers
 
 
 
@@ -44,15 +42,6 @@ let k = KrakenSchemas.get(record_type)
 
 ```
 
-## Running tests
-node --experimental-vm-modules node_modules/.bin/jest
-
-## Attributes
-
-- k.properties: list of properties objects
-- l.propertiesLight: mvp list of properties object
-
-
 ## Examples
 
 ```
@@ -66,3 +55,21 @@ p.getLocalizedPropertyID('en-US')) --> 'first name'
 
 
 ```
+
+## Tests
+
+Prompt:
+```
+please write unit tests for all functions in arrayHelpers.js. Please separate the tests one file by function. Please consider edge cases.
+```
+
+
+## Running tests
+node --experimental-vm-modules node_modules/.bin/jest
+
+## Attributes
+
+- k.properties: list of properties objects
+- l.propertiesLight: mvp list of properties object
+
+
