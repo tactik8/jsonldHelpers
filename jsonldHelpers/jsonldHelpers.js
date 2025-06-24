@@ -14,4 +14,4 @@ h.itemList = itemListHelpers
 
 
 
-export const jsonLdHelpers = h
+export const jsonldHelpers = h
