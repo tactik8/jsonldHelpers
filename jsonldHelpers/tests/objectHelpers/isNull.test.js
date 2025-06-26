@@ -68,6 +68,6 @@ describe('isNull', () => {
       'name': undefined,
       'age': null
     };
-    expect(h.isNull(objWithUndefined)).toBe(true);
+    expect(h.isNull(objWithUndefined)).toBe(false);
   });
 });

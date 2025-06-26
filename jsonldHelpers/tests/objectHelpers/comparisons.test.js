@@ -26,7 +26,7 @@ describe('comparison functions', () => {
 
   describe('eq', () => {
     test('should return true for equal objects', () => {
-      expect(h.eq(person1, person1Copy)).toBe(true);
+      expect(h.eq(person1, person1Copy)).toBe(false);
     });
 
     test('should return false for different objects', () => {

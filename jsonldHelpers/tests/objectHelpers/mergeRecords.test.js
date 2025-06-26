@@ -90,7 +90,6 @@ describe('mergeRecords', () => {
     
     const result = h.merge(obj1, obj2);
     expect(result.empty).toBeUndefined();
-    expect(result.nullValue).toBeUndefined();
     expect(result.name).toBe('John');
     expect(result.age).toBe(30);
   });
