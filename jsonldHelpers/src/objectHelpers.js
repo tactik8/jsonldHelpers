@@ -24,6 +24,7 @@ export const objectHelpers = {
     gt: gt,
     ge: ge,
     isSame: isSame,
+    isNull: isNull,
     diff: diff,
     merge: mergeRecords,
     flatten: flattenObject,
@@ -665,6 +666,37 @@ function isSame(obj1, obj2) {
 
     return true
 
+}
+
+
+function isNull(obj){
+    /**
+     * Checks if an object is null
+     * @param {Object} obj - The object to check
+     * @returns {Boolean} - True if the object is null, false otherwise
+     * @example isNull(null) // true
+     */
+
+
+    if(Array.isArray(obj)){
+        return obj.length === 0
+    }
+    
+    if(isJsonldObject(obj) === false){
+        return (obj === null || obj === undefined) && obj !== 0
+    }
+
+    obj = clean(obj)
+
+    let keys = Object.keys(obj) || []
+    keys = keys.filter(x => x.startsWith('@') === false)
+
+    let result = keys.length === 0
+
+    return result
+
+    
+    
 }
 
 function diff(obj1, obj2) {

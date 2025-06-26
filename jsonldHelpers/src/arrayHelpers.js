@@ -65,25 +65,39 @@ function deleteRecord(ref, records) {
      * 
      */
 
+
+    // Deal with array
+    if(Array.isArray(ref)){
+        for(let r of ref){
+            records = deleteRecord(r, records, processNested)
+        }
+        return records
+    }
+
+    // Deal with non-object
     if (h.isValid(ref) === false) {
         return records
     }
 
+    // Ensure reocrds is array
     records = Array.isArray(records) ? records : [records]
+
+    
     // Copy records
     let newRecords = records.map(x => x)
     records = newRecords
     
-
+    // Filter records
     let results = records.filter(x => !h.isSame(x, ref))
-    
+
+    // Return
     return results
 
 
 }
 
 
-function setRecord(record, records){
+function setRecord(record, records, processNested = true){
     /**
      * Sets a record in a list of records
      * @param {Object} record - The record to set
@@ -92,15 +106,33 @@ function setRecord(record, records){
      * 
      */
 
+    // Deal with array
     if(Array.isArray(record)){
         for(let r of record){
             records = setRecord(r, records)
         }
         return records
     }
-    
+
+    // Deal with non-object
+    if (h.isValid(record) === false){
+        return records
+    }
+
+    // Process main record
     records = deleteRecord(record, records)
     records = addRecord(record, records)
+    
+    
+    // Process nested
+    // Empty nested records are not added 
+    if(processNested === true){
+        let flattenedRecords = h.flatten(record)
+        flattenedRecords = flattenedRecords.filter(x => !h.isNull(x))        
+        flattenedRecords.map(x => records = deleteRecord(x, records))
+        flattenedRecords.map(x => records = addRecord(x, records))
+    }
+
     return records
 }
 
