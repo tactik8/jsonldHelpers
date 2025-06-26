@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JsonLD Helpers Test Runner</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .passed { background-color: #d4edda; }
+        .failed { background-color: #f8d7da; }
+        .test-result { margin: 5px 0; padding: 5px; }
+        .summary { font-weight: bold; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>JsonLD Helpers Test Suite</h1>
+    <div id="test-results"></div>
+    
+    <script type="module">
+        import { runAllTests } from './testSuite.js';
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            runAllTests();
+        });
+    </script>
+</body>
+</html>
