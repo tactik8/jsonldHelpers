@@ -75,7 +75,7 @@ p.getLocalizedPropertyID('en-US')) --> 'first name'
 
 Prompt:
 ```
-please write unit tests for all functions in arrayHelpers.js. The records used should be jsonld records (nested). Please separate the tests one file by function. Please consider edge cases (invalid, null, wrong type, etc.).
+please write unit tests for all functions in @jsonlsHelpers.js. The records used should be jsonld records (nested). Please separate the tests one directory by file and one file by function. Please consider edge cases (invalid, null, wrong type, etc.).
 ```
 
 
