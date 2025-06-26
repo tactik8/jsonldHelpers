@@ -14,7 +14,7 @@ import './deduplicate.test.js';
 import './diffLists.test.js';
 import './concat.test.js';
 
-import { arrayHelpers } from '../../src/arrayHelpers.js';
+import { arrayHelpers } from '../../jsonldHelpers/src/arrayHelpers.js';
 
 describe('arrayHelpers', () => {
   test('should export all expected functions', () => {

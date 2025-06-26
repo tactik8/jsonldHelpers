@@ -1,5 +1,5 @@
 
-import { arrayHelpers } from '../../src/arrayHelpers.js';
+import { arrayHelpers } from '../../jsonldHelpers/src/arrayHelpers.js';
 
 describe('arrayHelpers.deduplicate', () => {
   const testRecords = [
