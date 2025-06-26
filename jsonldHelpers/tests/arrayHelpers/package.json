@@ -10,7 +10,7 @@
     "test:coverage": "jest --coverage"
   },
   "jest": {
-    "testEnvironment": "node",
+    "preset": "default",
     "extensionsToTreatAsEsm": [".js"],
     "globals": {
       "jest": {
@@ -20,6 +20,9 @@
     "transform": {},
     "testMatch": [
       "**/*.test.js"
-    ]
+    ],
+    "moduleNameMapping": {
+      "^(\\.{1,2}/.*)\\.js$": "$1"
+    }
   }
 }

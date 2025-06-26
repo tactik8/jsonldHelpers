@@ -14,9 +14,10 @@ import './deduplicate.test.js';
 import './diffLists.test.js';
 import './concat.test.js';
 
+import { arrayHelpers } from '../../src/arrayHelpers.js';
+
 describe('arrayHelpers', () => {
   test('should export all expected functions', () => {
-    const { arrayHelpers } = require('../../src/arrayHelpers.js');
     
     expect(arrayHelpers).toBeDefined();
     expect(typeof arrayHelpers.get).toBe('function');
