@@ -31,7 +31,7 @@ export const arrayHelpers = {
 // -----------------------------------------------------
 
 
-function getRecord(ref, records) {
+function getRecord(ref, records, processNested = true) {
     /**
      * Gets a record from a list of records
      * @param {Object} ref - The reference object
@@ -45,17 +45,27 @@ function getRecord(ref, records) {
         return undefined
     }
 
+    // Ensure records is array
     records = Array.isArray(records) ? records : [records]
 
-    for (let record of records) {
+    // Search for record
+    let record = undefined
+    for (let r of records) {
         if (h.isSame(record, ref) === true) {
-            return record
+            record = r
         }
     }
-    return undefined
+
+    // Process nested (replace refs with child records)
+    if(r && processNested === true){
+        record = h.unFlatten(record, records)
+    }
+
+    // Return
+    return record
 }
 
-function deleteRecord(ref, records) {
+function deleteRecord(ref, records, processNested=false) {
     /**
      * Deletes a record from a list of records
      * @param {Object} ref - The reference object
@@ -81,6 +91,15 @@ function deleteRecord(ref, records) {
 
     // Ensure reocrds is array
     records = Array.isArray(records) ? records : [records]
+
+
+    // Process nested
+    if(processNested === true){
+        let flatRecords = h.flatten(ref)
+        flatRecords = flatRecords.filter(x => !h.isNull(x))        
+        flatRecords.map(x => records = deleteRecord(h.ref.get(x), records, false))
+        return records
+    }
 
     
     // Copy records
@@ -119,25 +138,25 @@ function setRecord(record, records, processNested = true){
         return records
     }
 
+    // Process nested
+    if(processNested === true){
+        let flattenedRecords = h.flatten(record)
+        flattenedRecords = flattenedRecords.filter(x => !h.isNull(x))        
+        flattenedRecords.map(x => records = setRecord(x, records, false))
+        return records
+    }
+
     // Process main record
     records = deleteRecord(record, records)
     records = addRecord(record, records)
     
-    
-    // Process nested
-    // Empty nested records are not added 
-    if(processNested === true){
-        let flattenedRecords = h.flatten(record)
-        flattenedRecords = flattenedRecords.filter(x => !h.isNull(x))        
-        flattenedRecords.map(x => records = deleteRecord(x, records))
-        flattenedRecords.map(x => records = addRecord(x, records))
-    }
-
+    // Return
     return records
+    
 }
 
 
-function addRecord(record, records, mergeIfExist = true) {
+function addRecord(record, records, mergeIfExist = true, processNested = true) {
     /**
      * Adds a record to a list of records
      * @param {Object} record - The record to add
@@ -157,6 +176,17 @@ function addRecord(record, records, mergeIfExist = true) {
     records = newRecords
 
 
+    // Process nested
+    if(processNested === true){
+        let flatRecords = h.flatten(record)
+        flatRecords = flatRecords.filter(x => !h.isNull(x))            
+        flatRecords.map(x => records = addRecord(x, records, mergeIfExist, false))
+        return records
+    }
+    
+
+    // Process main record
+    
     // Check if record already exists
     let existingRecord = getRecord(record, records)
     if (existingRecord !== undefined) {
@@ -171,6 +201,7 @@ function addRecord(record, records, mergeIfExist = true) {
     }
 
     records.push(record)
+    
     return records
 
 }

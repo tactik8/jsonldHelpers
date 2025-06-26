@@ -355,12 +355,12 @@ function valueMeetsFilterParams(value, param, strict = false) {
     }
 
     // Eval any key 
-    if (param?.['$*']){
+    if (param?.['$*']) {
 
 
         let results = []
 
-        if (typeof value === "object"){
+        if (typeof value === "object") {
             results.push(valueMeetsFilterParams(value, param['$*'], strict))
             let keys = Object.keys(value)
             let subResults = keys.map(x => valueMeetsFilterParams(value[x], param, strict))
@@ -486,7 +486,7 @@ function eq(obj1, obj2) {
     return false
 }
 
-function le(obj1, obj2){
+function le(obj1, obj2) {
     /**
      * Checks if the first object is less than or equal to the second object
      * @param {Object} obj1 - The first object
@@ -494,7 +494,7 @@ function le(obj1, obj2){
     return eq(obj1, obj2) || lt(obj1, obj2)
 }
 
-function ge(obj1, obj2){
+function ge(obj1, obj2) {
     /**
      * Checks if the first object is more than or equal to the second object
      * @param {Object} obj1 - The first object
@@ -669,7 +669,7 @@ function isSame(obj1, obj2) {
 }
 
 
-function isNull(obj){
+function isNull(obj) {
     /**
      * Checks if an object is null
      * @param {Object} obj - The object to check
@@ -678,11 +678,11 @@ function isNull(obj){
      */
 
 
-    if(Array.isArray(obj)){
+    if (Array.isArray(obj)) {
         return obj.length === 0
     }
-    
-    if(isJsonldObject(obj) === false){
+
+    if (isJsonldObject(obj) === false) {
         return (obj === null || obj === undefined) && obj !== 0
     }
 
@@ -695,8 +695,8 @@ function isNull(obj){
 
     return result
 
-    
-    
+
+
 }
 
 function diff(obj1, obj2) {
@@ -777,7 +777,7 @@ function mergeRecords(record1, record2) {
 
     // Clean the record
     mergedRecord = clean(mergedRecord)
-    
+
     return mergedRecord
 
 }
@@ -789,32 +789,32 @@ function mergeRecords(record1, record2) {
 // -----------------------------------------------------
 
 
-function clean(record){
+function clean(record) {
     /**
      * Cleans a record
      * @param {Object} record - The record to clean
      * @returns {Object} - The cleaned record
      * 
      */
-    if(Array.isArray(record)){
-        if(record.length === 0){
+    if (Array.isArray(record)) {
+        if (record.length === 0) {
             return undefined
         }
-        if(record.length === 1){
+        if (record.length === 1) {
             return clean(record[0])
         }
         return record.map(x => clean(x))
     }
 
-    if(isJsonldObject(record) === false){
+    if (isJsonldObject(record) === false) {
         return record
     }
 
     let newRecord = getRef(record)
-    for(let k of Object.keys(record)){
+    for (let k of Object.keys(record)) {
 
         let values = clean(record?.[k])
-        if(values !== undefined){
+        if (values !== undefined) {
             newRecord[k] = values
         }
     }
@@ -975,6 +975,8 @@ function flattenObject(obj) {
     return records
 
 }
+
+
 
 
 function unFlattenObject(obj, records, previousRecords=[]) {
