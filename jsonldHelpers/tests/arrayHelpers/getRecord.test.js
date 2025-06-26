@@ -1,5 +1,5 @@
 
-import { arrayHelpers } from '../../jsonldHelpers/src/arrayHelpers.js';
+import { arrayHelpers } from '../../src/arrayHelpers.js';
 
 describe('arrayHelpers.get (getRecord)', () => {
   const testRecords = [
