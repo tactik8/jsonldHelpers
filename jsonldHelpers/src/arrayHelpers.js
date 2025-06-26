@@ -51,7 +51,7 @@ function getRecord(ref, records, processNested = true) {
     // Search for record
     let record = undefined
     for (let r of records) {
-        if (h.isSame(record, ref) === true) {
+        if (h.isSame(r, ref) === true) {
             record = r
         }
     }
