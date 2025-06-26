@@ -357,17 +357,16 @@ function addValue(obj, path, value, noDuplicates = true) {
     obj = structuredClone(obj);
     
     // 
-    let values = getValues(obj, path, [])
-    values = Array.isArray(values) ? values : [values]
+    let currentValues = getValues(obj, path, [])
+    currentValues = Array.isArray(currentValues) ? currentValues : [currentValues]
 
     if (noDuplicates === true) {
-        values = values.filter(x => x !== value)
+        currentValues = currentValues.filter(x => h.isSame(x, value) === false)
     }
 
-    values.push(value)
-    
+    currentValues.push(value)
 
-    let result = setValue(obj, path, values)
+    let result = setValue(obj, path, currentValues)
     
     return result
 
