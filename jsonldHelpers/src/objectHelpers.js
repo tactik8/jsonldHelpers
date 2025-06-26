@@ -11,6 +11,7 @@ export const objectHelpers = {
     },
     new: thing,
     setID: setID,
+    clean: clean,
     isValid: isJsonldObject,
     ref: {
         get: getRef,
@@ -742,27 +743,52 @@ function mergeRecords(record1, record2) {
     }
 
 
+    // Clean the record
+    mergedRecord = clean(mergedRecord)
+    
     return mergedRecord
 
 }
 
 
+
 // -----------------------------------------------------
-//  Comment 
+//  Hygiene 
 // -----------------------------------------------------
 
 
+function clean(record){
+    /**
+     * Cleans a record
+     * @param {Object} record - The record to clean
+     * @returns {Object} - The cleaned record
+     * 
+     */
+    if(Array.isArray(record)){
+        if(record.length === 0){
+            return undefined
+        }
+        if(record.length === 1){
+            return clean(record[0])
+        }
+        return record.map(x => clean(x))
+    }
 
+    if(isJsonldObject(record) === false){
+        return record
+    }
 
-export const objectNestingHelpers = {
-    childs: {
-        get: getNestedRecords,
-        changeToRef: changeNestedRecordsToRef
-    },
-    toRef: changeNestedRecordsToRef,
-    flatten: flattenObject,
+    let newRecord = getRef(record)
+    for(let k of Object.keys(record)){
+
+        let values = clean(record?.[k])
+        if(values !== undefined){
+            newRecord[k] = values
+        }
+    }
+
+    return newRecord
 }
-
 
 
 
