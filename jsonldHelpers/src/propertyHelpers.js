@@ -25,6 +25,13 @@ export const propertyHelpers = {
 }
 
 
+let STRUCTURED_CLONE_EXISTS = false
+try {
+    STRUCTURED_CLONE_EXISTS = structuredClone !== undefined
+} catch(error) {
+    
+}
+
 
 
 
@@ -239,7 +246,7 @@ function setValue(obj, path, value, defaultValue) {
     }
 
     // Clone obj
-    if(structuredClone){
+    if(STRUCTURED_CLONE_EXISTS){
         obj = structuredClone(obj);
     } else {
         obj = JSON.parse(JSON.stringify(obj));
@@ -360,7 +367,7 @@ function addValue(obj, path, value, noDuplicates = true) {
     }
 
     // Clone obj
-    if(structuredClone){
+    if(STRUCTURED_CLONE_EXISTS){
         obj = structuredClone(obj);
     } else {
         obj = JSON.parse(JSON.stringify(obj));
@@ -397,7 +404,7 @@ function deleteValue(obj, path, value) {
     }
 
     // Clone obj
-    if(structuredClone){
+    if(STRUCTURED_CLONE_EXISTS){
         obj = structuredClone(obj);
     } else {
         obj = JSON.parse(JSON.stringify(obj));
