@@ -11,7 +11,7 @@ export const arrayHelpers = {
     getUniqueRefs: getUniqueRefs,
     deduplicate: deduplicate,
     diff: diffLists,
-    merge: mergeLists,
+    concat: concat,
     contains: contains
 }
 
@@ -362,7 +362,7 @@ function diffLists(records1, records2) {
 
 }
 
-function mergeLists(records1, records2, mergeIfExist = false) {
+function concat(records1, records2, mergeIfExist = false) {
     /**
      * Merges two lists of records
      * @param {Array} records1 - The first list of records

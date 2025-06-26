@@ -338,11 +338,7 @@ function addValue(obj, path, value, noDuplicates = true) {
      * Adds a value to a property of an object
      */
 
-    // Check if obj is a JSON-LD object
-    if (typeof obj !== 'object') {
-        console.log("Invalid object", obj, path, value)
-        return false
-    }
+    
 
     // Deal with lists
     if (Array.isArray(value)) {
@@ -352,6 +348,12 @@ function addValue(obj, path, value, noDuplicates = true) {
         return obj
     }
 
+
+    // Check if obj is a JSON-LD object
+    if (typeof obj !== 'object') {
+        console.log("Invalid object", obj, path, value)
+        return false
+    }
 
     // Clone obj
     obj = structuredClone(obj);

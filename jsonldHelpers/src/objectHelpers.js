@@ -751,6 +751,8 @@ function mergeRecords(record1, record2) {
      *
      */
 
+
+    console.log('s')
     if (isJsonldObject(record1) === false || isJsonldObject(record2) === false) {
         return undefined
     }
