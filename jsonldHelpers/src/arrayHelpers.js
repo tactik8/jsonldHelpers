@@ -3,6 +3,7 @@ import { objectHelpers as h} from './objectHelpers.js'
 
 export const arrayHelpers = {
     get: getRecord,
+    set: setRecord,
     delete: deleteRecord,
     add: addRecord,
     filter: filter,
@@ -80,6 +81,29 @@ function deleteRecord(ref, records) {
 
 
 }
+
+
+function setRecord(record, records){
+    /**
+     * Sets a record in a list of records
+     * @param {Object} record - The record to set
+     * @param {Array} records - The list of records
+     * @returns {Array} - The list of records with the record set
+     * 
+     */
+
+    if(Array.isArray(record)){
+        for(let r of record){
+            records = setRecord(r, records)
+        }
+        return records
+    }
+    
+    records = deleteRecord(record, records)
+    records = addRecord(record, records)
+    return records
+}
+
 
 function addRecord(record, records, mergeIfExist = true) {
     /**
