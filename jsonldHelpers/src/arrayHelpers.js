@@ -89,7 +89,7 @@ function deleteRecord(ref, records, processNested=false) {
         return records
     }
 
-    // Ensure reocrds is array
+    // Ensure records is array
     records = Array.isArray(records) ? records : [records]
 
 
