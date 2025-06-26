@@ -57,7 +57,7 @@ function getRecord(ref, records, processNested = true) {
     }
 
     // Process nested (replace refs with child records)
-    if(r && processNested === true){
+    if(record && processNested === true){
         record = h.unFlatten(record, records)
     }
 
