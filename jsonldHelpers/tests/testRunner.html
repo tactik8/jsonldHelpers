@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JsonLD Helpers Unit Tests</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .test-results {
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+        }
+        .test-pass { color: green; }
+        .test-fail { color: red; }
+        .test-skip { color: orange; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>JsonLD Helpers Unit Tests</h1>
+        <div id="test-controls" class="mb-3">
+            <button id="run-tests" class="btn btn-primary">Run All Tests</button>
+            <button id="clear-results" class="btn btn-secondary">Clear Results</button>
+        </div>
+        <div id="test-progress" class="mb-3">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+            </div>
+        </div>
+        <div id="test-summary" class="alert alert-info d-none">
+            <h4>Test Summary</h4>
+            <div id="summary-content"></div>
+        </div>
+        <div id="test-results" class="test-results border p-3"></div>
+    </div>
+
+    <script type="module">
+        import { runAllTests } from './testRunner.js';
+        
+        document.getElementById('run-tests').addEventListener('click', async () => {
+            document.getElementById('run-tests').disabled = true;
+            document.getElementById('test-results').innerHTML = 'Running tests...\n';
+            document.getElementById('test-summary').classList.add('d-none');
+            
+            try {
+                await runAllTests();
+            } catch (error) {
+                document.getElementById('test-results').innerHTML += `\nError running tests: ${error.message}\n`;
+            } finally {
+                document.getElementById('run-tests').disabled = false;
+            }
+        });
+        
+        document.getElementById('clear-results').addEventListener('click', () => {
+            document.getElementById('test-results').innerHTML = '';
+            document.getElementById('test-summary').classList.add('d-none');
+            document.querySelector('.progress-bar').style.width = '0%';
+        });
+    </script>
+</body>
+</html>
