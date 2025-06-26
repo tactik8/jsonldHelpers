@@ -239,7 +239,11 @@ function setValue(obj, path, value, defaultValue) {
     }
 
     // Clone obj
-    obj = structuredClone(obj);
+    if(structuredClone){
+        obj = structuredClone(obj);
+    } else {
+        obj = JSON.parse(JSON.stringify(obj));
+    }
 
 
     // Split the path into individual keys, handling both dot notation and array bracket notation.
@@ -356,7 +360,12 @@ function addValue(obj, path, value, noDuplicates = true) {
     }
 
     // Clone obj
-    obj = structuredClone(obj);
+    if(structuredClone){
+        obj = structuredClone(obj);
+    } else {
+        obj = JSON.parse(JSON.stringify(obj));
+    }
+    
     
     // 
     let currentValues = getValues(obj, path, [])
@@ -388,7 +397,11 @@ function deleteValue(obj, path, value) {
     }
 
     // Clone obj
-    obj = structuredClone(obj);
+    if(structuredClone){
+        obj = structuredClone(obj);
+    } else {
+        obj = JSON.parse(JSON.stringify(obj));
+    }
 
     
     let values = getValues(obj, path, [])
