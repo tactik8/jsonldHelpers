@@ -621,26 +621,65 @@ function isSame(obj1, obj2) {
         return obj1 == obj2;
     }
 
-    // Deal with object
-    let ref1 = getRef(obj1);
-    let ref2 = getRef(obj2);
 
-    if (ref1?.["@type"] === undefined || ref2?.["@type"] === undefined) {
-        return false;
-    }
-    if (ref1?.["@id"] === undefined || ref2?.["@id"] === undefined) {
-        return false;
-    }
+    // Compare identifiers 
 
-    if (ref1?.["@type"] !== ref2?.["@type"]) {
-        return false;
-    }
-    if (ref1?.["@id"] !== ref2?.["@id"]) {
-        return false;
+    let ids1 = getIdentifiers(obj1)
+    let ids2 = getIdentifiers(obj2)
+    
+    const intersectTypes = ids1.filter(value => ids2.includes(value));
+    if (intersectTypes.length > 0){
+        return true;
     }
 
-    return true;
+    return false
+
+    
 }
+
+function getIdentifiers(obj1){
+    /**
+     * Gets the sameAs hash of an object
+     * @param {Object} obj - The object to get the sameAs hash of
+     * @returns {String} - The sameAs hash of the object
+     * A valid identifier is a string or an object with a @type and @id
+     */
+
+    // Get sameAs
+    let sameAs1 = Array.isArray(obj1?.['sameAs']) ? obj1?.['sameAs'] : [obj1?.['sameAs']]
+    sameAs1 = sameAs1.filter(x => x !== undefined)
+
+    // Add self 
+    sameAs1.push(getRef(obj1))
+
+    // Process identifiers
+
+    let record_types = ph.types.get(obj1)
+    
+    let newSameAs = []
+    for(let x of sameAs1){
+
+        let types = ph.types.get(x)
+        let ids = ph.ids.get(x)
+        
+        if(types !== undefined && ids !== undefined){
+            for(let t of types){
+                for(let i of ids){
+                    newSameAs.push(`${t}/${i}`)
+                }
+            }
+        } else {
+            // If not object, add record_type to identifier
+            for(let t of record_types){
+                newSameAs.push(`${t}/${x}`)
+            }
+        }
+    }
+
+    return newSameAs
+}
+
+
 
 function isNull(obj) {
     /**

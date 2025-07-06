@@ -15,8 +15,33 @@ https://replit.com/@tactik8/JSONLDHelpers
 
 ### From github
 ```
-git clone https://github.com/tactik8/jsonldHelpers ./helpers
+git clone https://github.com/tactik8/jsonldHelpers ./utils/jsonldHelpers
 ```
+
+## How to use
+
+### make available to import  
+#### add in package.json 
+``` 
+imports: {
+	"#jsonldHelpers": "./utils/jsonldHelpers/jsonldHelpers/jsonldHelpers.js",
+}
+```
+
+#### or in html file
+```
+<script type="importmap">
+	{
+	  "imports": {
+		"#jsonldHelpers": "/utils/jsonldHelpers/jsonldHelpers/jsonldHelpers.js"
+	  }
+	}
+  </script>
+
+
+```
+
+
 
 ## Test and publish
 
@@ -34,15 +59,12 @@ npm publish
 
 ```
 
-git clone https://github.com/tactik8/jsonldHelpers ./helpers
-
-
 
 
 ## How to use
 
 ```
-import { jsonldHelpers as h } from 'https://tactik8.github.io/krakenJsSchema/kraken_schema/kraken_schema.js'
+import { jsonldHelpers as jh } from 'https://tactik8.github.io/krakenJsSchema/kraken_schema/kraken_schema.js'
 
 let record = {
 	"@context": "https://schema.org/",
@@ -52,24 +74,12 @@ let record = {
 }
 
 
-let k = h.value.get(record, '@type')
+let k = jh.value.get(record, '@type')
 
 
 ```
 
-## Examples
 
-```
-let k = KrakenSchemas.get('Person')
-
-let p = k.getProperty('givenName')
-
-p.getLocalizedPropertyID('en-US')) --> 'first name'
-
-
-
-
-```
 
 ## Tests
 

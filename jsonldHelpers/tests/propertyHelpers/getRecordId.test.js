@@ -29,7 +29,7 @@ describe('getRecordId', () => {
   });
 
   test('should return first id for multiple ids', () => {
-    expect(p.id.get(multipleIds)).toEqual(['id-1', 'id-2']);
+    expect(p.id.get(multipleIds)).toEqual('id-1');
   });
 
   test('should return undefined for object without @id', () => {

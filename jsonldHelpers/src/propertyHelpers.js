@@ -1,53 +1,51 @@
-
-import { objectHelpers as h} from './objectHelpers.js'
-
+import { objectHelpers as h } from "./objectHelpers.js";
 
 export const propertyHelpers = {
     keys: getProperties,
     type: {
         get: getRecordType,
-        set: setRecordType
+        set: setRecordType,
     },
     id: {
         get: getRecordId,
-        set: setRecordId
+        set: setRecordId,
+    },
+    types: {
+        get: getRecordTypes,
+        set: setRecordTypes,
+    },
+    ids: {
+        get: getRecordIds,
+        set: setRecordIds,
     },
     value: {
         get: getValue,
         set: setValue,
         add: addValue,
-        delete: deleteValue
+        delete: deleteValue,
     },
     values: {
         get: getValues,
         set: setValue,
-    }
-}
+    },
+};
 
-
-let STRUCTURED_CLONE_EXISTS = false
+let STRUCTURED_CLONE_EXISTS = false;
 try {
-    STRUCTURED_CLONE_EXISTS = structuredClone !== undefined
-} catch(error) {
-    
-}
-
-
-
-
-
+    STRUCTURED_CLONE_EXISTS = structuredClone !== undefined;
+} catch (error) {}
 
 // -----------------------------------------------------
 //  Property operations:
-//  getProperties, 
-//  getRecordType, 
+//  getProperties,
+//  getRecordType,
 //  setRecordType
-//  getRecordId, 
+//  getRecordId,
 //  setRecordId,
-//  getValue, 
-//  getValues, 
-//  setValue, 
-//  addValue, 
+//  getValue,
+//  getValues,
+//  setValue,
+//  addValue,
 //  deleteValue
 // -----------------------------------------------------
 
@@ -57,17 +55,24 @@ function getProperties(obj) {
      * @param {Object} obj - The object to get the properties of
      * @returns {Array} - The properties of the object
      * @example getProperties({name: "John Doe", age: 30}) // ["name", "age"]
-     * 
+     *
      */
-    if (h.isValid(obj) === false) {
-        return undefined
+
+    // Deal with null or undefined
+    if (obj === undefined || obj === null) {
+        return [];
     }
 
-    let properties = Object.keys(obj)
-    properties = properties.filter(x => x !== '@type' && x !== '@id' && x !== '@context')
-    properties.sort()
-    return properties
+    if (h.isValid(obj) === false) {
+        return [];
+    }
 
+    let properties = Object.keys(obj);
+    properties = properties.filter(
+        (x) => x !== "@type" && x !== "@id" && x !== "@context",
+    );
+    properties.sort();
+    return properties;
 }
 
 function getRecordType(record) {
@@ -76,15 +81,29 @@ function getRecordType(record) {
      * @param {Object} record - The record to get the type of
      * @returns {String} - The type of the record
      * @example getRecordType({@type: "Person", name: "John Doe"}) // "Person"
-     * 
+     *
      */
     if (h.isValid(record) === false) {
-        return undefined
+        return undefined;
     }
-    return getValue(record, '@type')
+    return getValue(record, "@type");
 }
 
-function setRecordType(record, record_type){
+function getRecordTypes(record) {
+    /**
+     * Gets the type of a record
+     * @param {Object} record - The record to get the type of
+     * @returns {String} - The type of the record
+     * @example getRecordType({@type: "Person", name: "John Doe"}) // "Person"
+     *
+     */
+    if (h.isValid(record) === false) {
+        return undefined;
+    }
+    return getValues(record, "@type");
+}
+
+function setRecordType(record, record_type) {
     /**
      * Sets the type of a record
      * @param {Object} record - The record to set the type of
@@ -92,7 +111,29 @@ function setRecordType(record, record_type){
      * @returns {Object} - The record with the type set
      * @example setRecordType({@type: "Person", name: "John Doe"}, "Animal") // {@type: "Animal", name: "John Doe"}
      */
-    return setValue(record, '@type', record_type)
+
+    if (h.isValid(record) === false) {
+        //return undefined;
+    }
+
+    return setValue(record, "@type", record_type);
+}
+
+function setRecordTypes(record, record_type) {
+    /**
+     * Sets the type of a record
+     * @param {Object} record - The record to set the type of
+     * @param {String} record_type - The type to set
+     * @returns {Object} - The record with the type set
+     * @example setRecordType({@type: "Person", name: "John Doe"}, "Animal") // {@type: "Animal", name: "John Doe"}
+     */
+
+    if (h.isValid(record) === false) {
+        return undefined;
+    }
+    record_type = Array.isArray(record_type) ? record_type : [record_type];
+
+    return setValue(record, "@type", [record_type]);
 }
 
 function getRecordId(record) {
@@ -101,15 +142,29 @@ function getRecordId(record) {
      * @param {Object} record - The record to get the type of
      * @returns {String} - The type of the record
      * @example getRecordType({@type: "Person", name: "John Doe"}) // "Person"
-     * 
+     *
      */
     if (h.isValid(record) === false) {
-        return undefined
+        return undefined;
     }
-    return getValue(record, '@id')
+    return getValue(record, "@id");
 }
 
-function setRecordId(record, record_id){
+function getRecordIds(record) {
+    /**
+     * Gets the id of a record
+     * @param {Object} record - The record to get the type of
+     * @returns {String} - The type of the record
+     * @example getRecordType({@type: "Person", name: "John Doe"}) // "Person"
+     *
+     */
+    if (h.isValid(record) === false) {
+        return undefined;
+    }
+    return getValues(record, "@id");
+}
+
+function setRecordId(record, record_id) {
     /**
      * Sets the id of a record
      * @param {Object} record - The record to set the id of
@@ -117,7 +172,76 @@ function setRecordId(record, record_id){
      * @returns {Object} - The record with the id set
      * @example setRecordId({@type: "Person", name: "John Doe"}, "1234567890") // {@type: "Person", name: "John Doe", @id: "1234567890"}
      */
-    return setValue(record, '@id', record_id)
+    return setValue(record, "@id", record_id);
+}
+
+function setRecordIds(record, record_id) {
+    /**
+     * Sets the id of a record
+     * @param {Object} record - The record to set the id of
+     * @param {String} record_id - The id to set
+     * @returns {Object} - The record with the id set
+     * @example setRecordId({@type: "Person", name: "John Doe"}, "1234567890") // {@type: "Person", name: "John Doe", @id: "1234567890"}
+     */
+
+    record_id = Array.isArray(record_id) ? record_id : [record_id];
+
+    return setValue(record, "@id", [record_id]);
+}
+
+function dotValueGetKey(path, n = 0) {
+    /**
+     * Gets the first key from a dot notation path
+     * @param {String} path - The path to get the key from
+     * @returns {String} - The key
+     */
+
+    n = n || 0;
+
+    let key;
+    try {
+        // Split up items
+        let items = path.split(".");
+
+        // Get specific item
+        n = n < 0 ? items.length + n : n;
+        let item = items?.[n] || undefined;
+
+        key = item.split("[")?.[0] || key;
+    } catch (error) {}
+    return key;
+}
+
+function dotValueGetPosition(path, n = 0) {
+    /**
+     * Gets the first key from a dot notation path
+     * @param {String} path - The path to get the key from
+     * @param {Number} n - The position to get the key from (negative to go from right)
+     * @returns {String} - The key
+     */
+
+    n = n || 0;
+    let position;
+    try {
+        // Split up items
+        let items = path.split(".");
+
+        // Get specific item
+        n = n < 0 ? items.length + n : n;
+        let item = items?.[n] || undefined;
+
+        if (item === undefined) {
+            return undefined;
+        }
+
+        position = item.split("[")[1] || undefined;
+        position = position?.replace("]", "");
+        position = position?.trim();
+        position = Number(position);
+        position = isNaN(position) ? undefined : position;
+    } catch (error) {}
+
+    return position;
 }
 
 function getValue(obj, path, defaultValue) {
@@ -129,94 +253,59 @@ function getValue(obj, path, defaultValue) {
      * @returns {*} - The value of the property
      */
 
-    let value = getValues(obj, path, defaultValue)
-    return value?.[0]
-
+    let values = getValues(obj, path, defaultValue);
+    values = Array.isArray(values) ? values : [values];
+    return values?.[0];
 }
 
 function getValues(obj, path, defaultValue) {
     /**
      * Gets a value from a property of an object
-     * @param {Object} obj - The object to get the value from
-     * @param {String} property - The property to get the value from
-     * @param {*} defaultValue - The default value to return if the property does not exist
-     * @returns {*} - The value of the property
-     * @example getValue({name: "John Doe"}, "name") // "John Doe"
-     * @example getValue({name: "John Doe"}, "age") // undefined
-     * @example getValue({name: "John Doe", age: 30}, "age") // 30
      */
 
-
-
     // If empty path
-    if (path === undefined || path === null || path === ''){
-        return obj
+    if (
+        path === undefined ||
+        path === null ||
+        path === "" ||
+        typeof path !== "string"
+    ) {
+        return obj;
     }
+
+    // If the object is null or undefined,
+    if (obj === null || typeof obj === "undefined") {
+        return defaultValue;
+    }
+
+    // Get key and position of 1st element
+    let key = dotValueGetKey(path);
+    let position = dotValueGetPosition(path);
+
+    // Get value
+    let values = obj?.[key] || undefined;
+
+    if (position !== undefined) {
+        values = Array.isArray(values) ? values : [values];
+        values = values?.[position] || undefined;
+    }
+
+    // Get remaining path
+    let pathElements = path.split(".");
+    if (values !== undefined && pathElements.length > 1) {
+        let remainingPath = pathElements.slice(1).join(".");
+        values = getValues(values, remainingPath, defaultValue);
+    }
+
+    // Get nested value
+
+    // Return
+    values = values || defaultValue;
+
+    values = Array.isArray(values) ? values : [values];
     
-    // If the object is null or undefined, or the path is not a string, return undefined immediately.
-    if (obj === null || typeof obj === 'undefined' || typeof path !== 'string') {
-        if (defaultValue !== undefined) {
-            return defaultValue
-        }
-        return undefined;
-    }
-
-    // Split the path into individual keys, handling both dot notation and array bracket notation.
-    // Example: "data[0].name" becomes ["data", "0", "name"]
-    // Example: "user.address.street" becomes ["user", "address", "street"]
-    const keys = path.split('.').flatMap(key => {
-        // Check if the key contains array bracket notation (e.g., "items[0]")
-        const arrayMatch = key.match(/^(.*?)\[(\d+)\]$/);
-        if (arrayMatch) {
-            // If it's an array, return the key part and the index as separate parts
-            // e.g., "items[0]" -> ["items", "0"]
-            const [, baseKey, index] = arrayMatch;
-            return baseKey ? [baseKey, index] : [index]; // Handle cases like "[0].name"
-        }
-        return key; // Otherwise, return the key as is
-    }).filter(Boolean); // Remove any empty strings that might result from splitting
-
-    let current = obj; // Start traversal from the root object/array
-
-    // Iterate through each key in the path
-    for (let i = 0; i < keys.length; i++) {
-        const key = keys[i];
-
-        // Check if the current value is an object or an array before attempting to access its property/index.
-        if (typeof current !== 'object' || current === null) {
-            if (defaultValue !== undefined) {
-                return defaultValue
-            }
-            return undefined; // Path does not exist or structure is not as expected
-        }
-
-        // Check if the current key is an array index (a string containing only digits)
-        if (String(Number(key)) === key && Array.isArray(current)) {
-            const index = Number(key);
-            if (index >= 0 && index < current.length) {
-                current = current[index]; // Access array element
-            } else {
-                if (defaultValue !== undefined) {
-                    return defaultValue
-                }
-                return undefined; // Index out of bounds
-            }
-        } else if (typeof current === 'object' && current !== null && current.hasOwnProperty(key)) {
-            current = current[key]; // Access object property
-        } else {
-            // If the property/index does not exist at the current level, return undefined.
-            if (defaultValue !== undefined) {
-                return defaultValue
-            }
-            return undefined;
-        }
-    }
-
-    current = Array.isArray(current) ? current : [current]
-    return current; // Return the final value found at the specified path
-
+    return values;
 }
-
 
 function setValue(obj, path, value, defaultValue) {
     /**
@@ -229,119 +318,60 @@ function setValue(obj, path, value, defaultValue) {
      * @example setvalueToProperty({name: "John Doe"}, "name", "Jane Doe") // {name: "Jane Doe"}
      */
 
-
-    // Validate input parameters
-    if (obj === null || typeof obj === 'undefined' || typeof path !== 'string') {
-        if (defaultValue !== undefined) {
-            return defaultValue
-        }
-        return undefined;
+    // Deal with null obj
+    if (obj === undefined || obj === null) {
+        obj = {};
     }
 
-
-    // Skip if already same
-    let newValues = Array.isArray(value) ? value : [value]
-    if (h.eq(getValues(obj, path), newValues)){
-        return obj
+    // Handle invalid obj
+    if (typeof obj !== "object"){
+        return undefined
     }
-
+    
     // Clone obj
-    if(STRUCTURED_CLONE_EXISTS){
+    if (STRUCTURED_CLONE_EXISTS) {
         obj = structuredClone(obj);
     } else {
         obj = JSON.parse(JSON.stringify(obj));
     }
 
 
-    // Split the path into individual keys, handling both dot notation and array bracket notation.
-    const keys = path.split('.').flatMap(key => {
-        const arrayMatch = key.match(/^(.*?)\[(\d+)\]$/);
-        if (arrayMatch) {
-            const [, baseKey, index] = arrayMatch;
-            return baseKey ? [baseKey, index] : [index];
-        }
-        return key;
-    }).filter(Boolean);
-
-    let current = obj;
-    // Traverse the path, creating intermediate objects or arrays as needed
-    for (let i = 0; i < keys.length; i++) {
-        const key = keys[i];
-        const isLastKey = (i === keys.length - 1);
-
-        // If the current segment is an array index
-        if (String(Number(key)) === key) { // This checks if key is a valid number string
-            const index = Number(key);
-
-            if (!Array.isArray(current)) {
-                // If it's not an array, but we expect an array (e.g., path was "a.b[0]" and "b" was not an array)
-                if (typeof current === 'object' && current !== null && keys[i - 1]) {
-                    // If the previous key was an object property, it means `current[key]` should be an array
-                    // For example if `path` is `a.b[0]`, then `b` should be an array.
-                    // If `b` is `null` or `{}` at this point, we initialize it as an array.
-                    current = [];
-                    // Update the parent object/array with the newly created array
-                    if (i > 0) {
-                        const prevKey = keys[i - 1];
-                        if (String(Number(prevKey)) === prevKey && Array.isArray(objAtPreviousLevel)) {
-                            objAtPreviousLevel[Number(prevKey)] = current;
-                        } else if (typeof objAtPreviousLevel === 'object' && objAtPreviousLevel !== null) {
-                            objAtPreviousLevel[prevKey] = current;
-                        }
-                    }
-                } else {
-                    if (defaultValue !== undefined) {
-                        return defaultValue
-                    }
-
-                    return false;
-                }
-            }
-
-            // If it's the last key, set the value directly
-            if (isLastKey) {
-                // Ensure array has enough capacity
-                if (index >= current.length) {
-                    // Fill missing elements with null or undefined (or desired default)
-                    for (let j = current.length; j < index; j++) {
-                        current.push(undefined);
-                    }
-                }
-                current[index] = value;
-            } else {
-                // If intermediate array element does not exist or is not an object/array, initialize it.
-                if (index >= current.length || typeof current[index] !== 'object' || current[index] === null) {
-                    const nextKeyIsArray = String(Number(keys[i + 1])) === keys[i + 1];
-                    current[index] = nextKeyIsArray ? [] : {};
-                }
-                current = current[index];
-            }
-        } else { // Current segment is an object property
-            if (typeof current !== 'object' || current === null) {
-                if (defaultValue !== undefined) {
-                    return defaultValue
-                }
-
-                return false;
-            }
-
-            // If the property doesn't exist or is not an object/array, initialize it.
-            if (!current.hasOwnProperty(key) || typeof current[key] !== 'object' || current[key] === null) {
-                if (!isLastKey) { // Only initialize if it's not the last key
-                    const nextKeyIsArray = String(Number(keys[i + 1])) === keys[i + 1];
-                    current[key] = nextKeyIsArray ? [] : {};
-                }
-            }
-
-            if (isLastKey) {
-                current[key] = value;
-            } else {
-                current = current[key];
-            }
-        }
+    // If empty path
+    if (path === undefined || path === null || path === "") {
+        return obj;
     }
-    return obj;
 
+    
+    // Get current value
+    let key = dotValueGetKey(path);
+    let position = dotValueGetPosition(path);
+
+    let currentValue = obj?.[key] || undefined;
+
+    if (position !== undefined) {
+        currentValue = Array.isArray(currentValue)
+            ? currentValue
+            : [currentValue];
+        currentValue = currentValue?.[position] || undefined;
+    }
+
+    // if array, get first value
+    if(Array.isArray(currentValue)){ 
+        currentValue = currentValue?.[0]
+    }
+
+    
+    // Get remaining path
+    let pathElements = path.split(".");
+    if (pathElements.length > 1) {
+        let remainingPath = pathElements.slice(1).join(".");
+        value = setValue(currentValue, remainingPath, value, defaultValue);
+    }
+
+    obj[key] = value;
+
+    // Return
+    return obj;
 }
 
 function addValue(obj, path, value, noDuplicates = true) {
@@ -349,45 +379,36 @@ function addValue(obj, path, value, noDuplicates = true) {
      * Adds a value to a property of an object
      */
 
-    
-
     // Deal with lists
     if (Array.isArray(value)) {
         for (let v of value) {
-            obj = addValue(obj, path, v, noDuplicates)
+            obj = addValue(obj, path, v, noDuplicates);
         }
-        return obj
+        return obj;
     }
-
 
     // Check if obj is a JSON-LD object
-    if (typeof obj !== 'object') {
-        console.log("Invalid object", obj, path, value)
-        return false
+    if (typeof obj !== "object") {
+        return false;
     }
 
-    // Clone obj
-    if(STRUCTURED_CLONE_EXISTS){
-        obj = structuredClone(obj);
-    } else {
-        obj = JSON.parse(JSON.stringify(obj));
-    }
-    
-    
-    // 
-    let currentValues = getValues(obj, path, [])
-    currentValues = Array.isArray(currentValues) ? currentValues : [currentValues]
+    //
+    let currentValues = getValues(obj, path, []);
+    currentValues = Array.isArray(currentValues)
+        ? currentValues
+        : [currentValues];
 
     if (noDuplicates === true) {
-        currentValues = currentValues.filter(x => h.isSame(x, value) === false)
+        currentValues = currentValues.filter(
+            (x) => h.isSame(x, value) === false,
+        );
     }
 
-    currentValues.push(value)
+    currentValues.push(value);
 
-    let result = setValue(obj, path, currentValues)
-    
-    return result
+    let result = setValue(obj, path, currentValues);
 
+    return result;
 }
 
 function deleteValue(obj, path, value) {
@@ -399,22 +420,35 @@ function deleteValue(obj, path, value) {
      * @returns {Object} - The object with the value deleted
      * @example deleteValue({name: "John Doe", age: 30}, "age", 30) // {name: "John Doe"}
      */
+
+    // Handle empty object
+    if (obj === undefined || obj === null) {
+        return undefined;
+    }
+
+    // Handle empty path
+    if (path === undefined || path === null || path === "") {
+        return obj;
+    }
+    if (typeof path !== "string") {
+        return obj;
+    }
+
+    // Check if obj is a JSON-LD object
     if (h.isValid(obj) === false) {
-        return undefined
+        return obj;
     }
 
-    // Clone obj
-    if(STRUCTURED_CLONE_EXISTS){
-        obj = structuredClone(obj);
-    } else {
-        obj = JSON.parse(JSON.stringify(obj));
-    }
+    // Get values
+    let values = getValues(obj, path, []);
 
-    
-    let values = getValues(obj, path, [])
-    values = Array.isArray(values) ? values : [values]
-    values = values.filter(x => h.isSame(x, value) === false)
-    obj = setValue(obj, path, values)
-    
-    return obj
+    // Skip if no values present
+    if (values.length === 0) {
+        return obj;
+    }
+    values = values.filter((x) => h.isSame(x, value) === false);
+
+    let result = setValue(obj, path, values);
+
+    return result;
 }
