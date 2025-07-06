@@ -8,7 +8,7 @@ JS library forjsonld
 https://github.com/tactik8/jsonldHelpers
 
 ### repl.it
-https://replit.com/@tactik8/JSONLDHelpers
+https://replit.com/@tactik8/jsonldHelpers
 
 
 ## Install
