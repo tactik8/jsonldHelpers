@@ -1,5 +1,5 @@
+import { ObjectHelpers as h } from '../../src/objectHelpers/objectHelpers.models.js';
 
-import { objectHelpers as h } from '../../src/objectHelpers.js';
 
 describe('setRef', () => {
   test('should set reference on object', () => {

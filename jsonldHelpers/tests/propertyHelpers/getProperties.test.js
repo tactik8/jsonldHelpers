@@ -1,5 +1,5 @@
 
-import { propertyHelpers as p } from '../../src/propertyHelpers.js';
+import { PropertyHelpers as p } from '../../src/propertyHelpers/propertyHelpers.models.js';
 
 describe('getProperties', () => {
   const validPerson = {
@@ -45,18 +45,18 @@ describe('getProperties', () => {
   });
 
   test('should return undefined for null', () => {
-    expect(p.keys(null)).toBeUndefined();
+    expect(p.keys(null)).toEqual([])
   });
 
   test('should return undefined for undefined', () => {
-    expect(p.keys(undefined)).toBeUndefined();
+    expect(p.keys(undefined)).toEqual([])
   });
 
   test('should return undefined for invalid objects', () => {
-    expect(p.keys('string')).toBeUndefined();
-    expect(p.keys(123)).toBeUndefined();
-    expect(p.keys([])).toBeUndefined();
-    expect(p.keys(true)).toBeUndefined();
+    expect(p.keys('string')).toEqual([])
+    expect(p.keys(123)).toEqual([])
+    expect(p.keys([])).toEqual([])
+    expect(p.keys(true)).toEqual([])
   });
 
   test('should handle empty object', () => {

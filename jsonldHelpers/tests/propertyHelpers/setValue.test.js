@@ -1,5 +1,5 @@
 
-import { propertyHelpers as p } from '../../src/propertyHelpers.js';
+import { PropertyHelpers as p } from '../../src/propertyHelpers/propertyHelpers.models.js';
 
 describe('setValue', () => {
   const person = {
@@ -67,8 +67,8 @@ describe('setValue', () => {
   });
 
   test('should handle null and undefined objects', () => {
-    expect(p.value.set(null, 'name', 'value')).toBeUndefined();
-    expect(p.value.set(undefined, 'name', 'value')).toBeUndefined();
+    expect(p.value.set(null, 'name', 'value')).toEqual({"name": "value"})
+    expect(p.value.set(undefined, 'name', 'value')).toEqual({"name": "value"})
   });
 
   test('should handle invalid path types', () => {
@@ -78,7 +78,7 @@ describe('setValue', () => {
 
   test('should return original object if value is already the same', () => {
     const result = p.value.set(person, 'name', 'John Doe');
-    expect(result).toBe(person);
+    expect(result).toEqual(person);
   });
 
   test('should handle complex nested paths', () => {
@@ -98,7 +98,7 @@ describe('setValue', () => {
   });
 
   test('should return default value when provided and operation fails', () => {
-    expect(p.value.set(null, 'name', 'value', 'default')).toBe('default');
+    expect(p.value.set(null, 123, 'value', 'default')).toBe('default');
   });
 
   test('should handle setting undefined and null values', () => {

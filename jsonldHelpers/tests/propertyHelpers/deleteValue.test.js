@@ -1,5 +1,5 @@
 
-import { propertyHelpers as p } from '../../src/propertyHelpers.js';
+import { PropertyHelpers as p } from '../../src/propertyHelpers/propertyHelpers.models.js';
 
 describe('deleteValue', () => {
   const person = {

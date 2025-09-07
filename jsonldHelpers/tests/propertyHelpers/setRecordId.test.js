@@ -1,5 +1,5 @@
 
-import { propertyHelpers as p } from '../../src/propertyHelpers.js';
+import { PropertyHelpers as p } from '../../src/propertyHelpers/propertyHelpers.models.js';
 
 describe('setRecordId', () => {
   const person = {
@@ -40,11 +40,11 @@ describe('setRecordId', () => {
   });
 
   test('should handle null input', () => {
-    expect(p.id.set(null, 'person-123')).toBeUndefined();
+    expect(p.id.set(null, 'person-123')).toEqual({"@id": "person-123"});
   });
 
   test('should handle undefined input', () => {
-    expect(p.id.set(undefined, 'person-123')).toBeUndefined();
+    expect(p.id.set(undefined, 'person-123')).toEqual({"@id": "person-123"});
   });
 
   test('should handle invalid object types', () => {

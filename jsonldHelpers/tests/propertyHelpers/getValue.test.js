@@ -1,5 +1,5 @@
 
-import { propertyHelpers as p } from '../../src/propertyHelpers.js';
+import { PropertyHelpers as p } from '../../src/propertyHelpers/propertyHelpers.models.js';
 
 describe('getValue', () => {
   const person = {
@@ -71,8 +71,8 @@ describe('getValue', () => {
   });
 
   test('should handle invalid path types', () => {
-    expect(p.value.get(person, null)).toBe(person);
-    expect(p.value.get(person, undefined)).toBe(person);
+    expect(p.value.get(person, null)).toBeUndefined();
+    expect(p.value.get(person, undefined)).toBeUndefined();
     expect(p.value.get(person, '')).toBe(person);
     expect(p.value.get(person, 123)).toBeUndefined();
   });

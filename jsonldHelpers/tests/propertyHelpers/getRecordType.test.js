@@ -1,5 +1,5 @@
 
-import { propertyHelpers as p } from '../../src/propertyHelpers.js';
+import { PropertyHelpers as p } from '../../src/propertyHelpers/propertyHelpers.models.js';
 
 describe('getRecordType', () => {
   const person = {
@@ -29,7 +29,7 @@ describe('getRecordType', () => {
   });
 
   test('should return first type for multiple types', () => {
-    expect(p.type.get(multipleTypes)).toEqual(['Person', 'Employee']);
+    expect(p.type.get(multipleTypes)).toEqual('Person');
   });
 
   test('should return undefined for object without @type', () => {

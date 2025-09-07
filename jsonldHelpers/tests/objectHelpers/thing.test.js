@@ -1,5 +1,5 @@
 
-import { objectHelpers as h } from '../../src/objectHelpers.js';
+import { ObjectHelpers as h } from '../../src/objectHelpers/objectHelpers.models.js';
 
 describe('thing', () => {
   test('should create a Thing with default type', () => {

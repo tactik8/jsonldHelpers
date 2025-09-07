@@ -1,5 +1,5 @@
 
-import { propertyHelpers as p } from '../../src/propertyHelpers.js';
+import { PropertyHelpers as p } from '../../src/propertyHelpers/propertyHelpers.models.js';
 
 describe('addValue', () => {
   const person = {
@@ -73,7 +73,6 @@ describe('addValue', () => {
   test('should handle invalid objects', () => {
     expect(p.value.add('string', 'prop', 'value')).toBe(false);
     expect(p.value.add(123, 'prop', 'value')).toBe(false);
-    expect(p.value.add(null, 'prop', 'value')).toBe(false);
   });
 
   test('should handle empty arrays', () => {

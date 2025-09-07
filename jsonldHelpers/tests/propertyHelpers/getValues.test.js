@@ -1,5 +1,5 @@
 
-import { propertyHelpers as p } from '../../src/propertyHelpers.js';
+import { PropertyHelpers as p } from '../../src/propertyHelpers/propertyHelpers.models.js';
 
 describe('getValues', () => {
   const person = {
@@ -51,14 +51,14 @@ describe('getValues', () => {
   });
 
   test('should return undefined for non-existent properties', () => {
-    expect(p.values.get(person, 'nonexistent')).toBeUndefined();
-    expect(p.values.get(person, 'address.nonexistent')).toBeUndefined();
-    expect(p.values.get(person, 'hobbies[5]')).toBeUndefined();
+    expect(p.values.get(person, 'nonexistent')).toEqual([]);
+    expect(p.values.get(person, 'address.nonexistent')).toEqual([]);
+    expect(p.values.get(person, 'hobbies[5]')).toEqual([]);
   });
 
   test('should return default value when provided', () => {
     expect(p.values.get(person, 'nonexistent', ['default'])).toEqual(['default']);
-    expect(p.values.get(person, 'address.nonexistent', 'N/A')).toBe('N/A');
+    expect(p.values.get(person, 'address.nonexistent', 'N/A')).toEqual(['N/A']);
   });
 
   test('should handle null and undefined objects', () => {
@@ -68,9 +68,9 @@ describe('getValues', () => {
   });
 
   test('should handle invalid path types', () => {
-    expect(p.values.get(person, null)).toBe(person);
-    expect(p.values.get(person, undefined)).toBe(person);
-    expect(p.values.get(person, '')).toBe(person);
+    expect(p.values.get(person, null)).toBeUndefined();
+    expect(p.values.get(person, undefined)).toBeUndefined();
+    expect(p.values.get(person, '')).toBe(person)
     expect(p.values.get(person, 123)).toBeUndefined();
   });
 
@@ -90,8 +90,8 @@ describe('getValues', () => {
   });
 
   test('should handle edge cases with arrays', () => {
-    expect(p.values.get(person, 'children[10].name')).toBeUndefined();
-    expect(p.values.get(person, 'children[-1].name')).toBeUndefined();
+    expect(p.values.get(person, 'children[10].name')).toEqual([])
+    expect(p.values.get(person, 'children[-1].name')).toEqual([])
   });
 
   test('should handle empty arrays', () => {

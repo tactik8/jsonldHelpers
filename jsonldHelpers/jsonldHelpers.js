@@ -7,6 +7,7 @@ import { propertyHelpers} from './src/propertyHelpers.js'
 import { itemListHelpers} from './src/itemListHelpers.js'
 import { actionHelpers} from './src/actionHelpers.js'
 
+import { Datafeed} from './src/datafeed/datafeed.models.js'
 
 let h = { ...objectHelpers, ...propertyHelpers}
 h = { ...h, ...arrayHelpers}
@@ -14,6 +15,6 @@ h = { ...h, ...arrayHelpers}
 h.itemList = itemListHelpers
 h.action = actionHelpers
 
-
+h.datafeed = Datafeed
 
 export const jsonldHelpers = h

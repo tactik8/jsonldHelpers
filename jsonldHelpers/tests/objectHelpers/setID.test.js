@@ -1,5 +1,5 @@
 
-import { objectHelpers as h } from '../../src/objectHelpers.js';
+import { ObjectHelpers as h } from '../../src/objectHelpers/objectHelpers.models.js';
 
 describe('setID', () => {
   test('should set ID for valid object without ID', () => {
